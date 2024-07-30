@@ -30,7 +30,7 @@ class Post(models.Model):
 class Comment(models.Model):
     
     createdOn =models.DateTimeField(auto_now=True)
-    commentContent =models.TextField()
+    Text =models.TextField()
     
     posts =models.OneToOneField("Post", on_delete=models.CASCADE,related_name="post_comment",null=True, default=1)
     # post =models.OneToOneField("Post", on_delete=models.CASCADE)
@@ -40,7 +40,7 @@ class Comment(models.Model):
         ordering=["createdOn"]
         
     def __str__(self) -> str:
-        return "comments"
+        return self.commentContent
     
     
       

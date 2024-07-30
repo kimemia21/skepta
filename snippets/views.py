@@ -19,10 +19,12 @@ def login(request):
 
     # Authenticate the user
     user = authenticate(username=username, password=password)
+    
     if user is not None:
         return Response({"message": "User is valid"}, status=status.HTTP_200_OK)
     else:
         return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+    
     
     
 @api_view(["POST"])
@@ -37,7 +39,7 @@ def signUp(request):
         loginserializer =UserSerializer(user)
         return Response(loginserializer.data,status=status.HTTP_200_OK)
     else:
-        return Response(serializer.data,status=status.HTTP_400_BAD_REQUEST)    
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)    
 
 
 
@@ -49,6 +51,51 @@ def getPosts(request):
         return Response(seriailizer.data,status=status.HTTP_200_OK)
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(["GET"])
+def post(request,pk):
+    # data =request.data
+    user =get_object_or_404(Post,id=pk)  
+    serializer =PostSerializer(user)
+    return Response(serializer.data,status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+def author(request,pk):
+    _author =get_object_or_404(Author,id=pk)
+    serializer =AuthorSerializer(_author)
+    return Response(serializer.data  , status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def comment(request,pk):
+    _comment =get_object_or_404(Comment,id=pk)
+    serializer =CommentsSerializer(_comment)
+    return Response(serializer.data,status=status.HTTP_200_OK)
+
+@api_view(["POST"])
+def addPost(request):
+    data =request.data
+    serializer =PostSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(["POST"])
+def addComment(request):
+    data =request.data
+    serializer =CommentsSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+        
+
+    
 
 
 
